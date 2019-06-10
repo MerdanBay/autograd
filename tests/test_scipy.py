@@ -11,7 +11,6 @@ except:
 else:
     import autograd.numpy as np
     import autograd.numpy.random as npr
-    import autograd.scipy.misc
     import autograd.scipy.signal
     import autograd.scipy.stats as stats
     import autograd.scipy.stats.multivariate_normal as mvn
@@ -57,13 +56,17 @@ else:
 
     def test_norm_pdf():    combo_check(stats.norm.pdf,    [0,1,2])([R(4)], [R(4)], [R(4)**2 + 1.1])
     def test_norm_cdf():    combo_check(stats.norm.cdf,    [0,1,2])([R(4)], [R(4)], [R(4)**2 + 1.1])
+    def test_norm_sf():     combo_check(stats.norm.sf,     [0,1,2])([R(4)], [R(4)], [R(4)**2 + 1.1])
     def test_norm_logpdf(): combo_check(stats.norm.logpdf, [0,1,2])([R(4)], [R(4)], [R(4)**2 + 1.1])
     def test_norm_logcdf(): combo_check(stats.norm.logcdf, [0,1,2])([R(4)], [R(4)], [R(4)**2 + 1.1])
+    def test_norm_logsf():  combo_check(stats.norm.logsf,  [0,1,2])([R(4)], [R(4)], [R(4)**2 + 1.1])
 
     def test_norm_pdf_broadcast():    combo_check(stats.norm.pdf,    [0,1,2])([R(4,3)], [R(1,3)], [R(4,1)**2 + 1.1])
     def test_norm_cdf_broadcast():    combo_check(stats.norm.cdf,    [0,1,2])([R(4,3)], [R(1,3)], [R(4,1)**2 + 1.1])
+    def test_norm_sf_broadcast():     combo_check(stats.norm.cdf,    [0,1,2])([R(4,3)], [R(1,3)], [R(4,1)**2 + 1.1])
     def test_norm_logpdf_broadcast(): combo_check(stats.norm.logpdf, [0,1,2])([R(4,3)], [R(1,3)], [R(4,1)**2 + 1.1])
     def test_norm_logcdf_broadcast(): combo_check(stats.norm.logcdf, [0,1,2])([R(4,3)], [R(1,3)], [R(4,1)**2 + 1.1])
+    def test_norm_logsf_broadcast():  combo_check(stats.norm.logcdf, [0,1,2])([R(4,3)], [R(1,3)], [R(4,1)**2 + 1.1])
 
     def test_poisson_cdf():    combo_check(stats.poisson.cdf,    [1])([np.round(R(4)**2)], [R(4)**2 + 1.1])
     def test_poisson_logpmf(): combo_check(stats.poisson.logpmf, [1])([np.round(R(4)**2)], [R(4)**2 + 1.1])
@@ -111,14 +114,14 @@ else:
     def test_dirichlet_logpdf_alpha(): combo_check(stats.dirichlet.logpdf,      [1])([x], [alpha])
 
     ### Misc ###
-    def test_logsumexp1(): combo_check(autograd.scipy.misc.logsumexp, [0], modes=['fwd', 'rev'])([1.1, R(4), R(3,4)],                axis=[None, 0],    keepdims=[True, False])
-    def test_logsumexp2(): combo_check(autograd.scipy.misc.logsumexp, [0], modes=['fwd', 'rev'])([R(3,4), R(4,5,6), R(1,5)],         axis=[None, 0, 1], keepdims=[True, False])
-    def test_logsumexp3(): combo_check(autograd.scipy.misc.logsumexp, [0], modes=['fwd', 'rev'])([R(4)], b = [np.exp(R(4))],         axis=[None, 0],    keepdims=[True, False])
-    def test_logsumexp4(): combo_check(autograd.scipy.misc.logsumexp, [0], modes=['fwd', 'rev'])([R(3,4),], b = [np.exp(R(3,4))],    axis=[None, 0, 1], keepdims=[True, False])
-    def test_logsumexp5(): combo_check(autograd.scipy.misc.logsumexp, [0], modes=['fwd', 'rev'])([R(2,3,4)], b = [np.exp(R(2,3,4))], axis=[None, 0, 1], keepdims=[True, False])
+    def test_logsumexp1(): combo_check(special.logsumexp, [0], modes=['fwd', 'rev'])([1.1, R(4), R(3,4)],                axis=[None, 0],    keepdims=[True, False])
+    def test_logsumexp2(): combo_check(special.logsumexp, [0], modes=['fwd', 'rev'])([R(3,4), R(4,5,6), R(1,5)],         axis=[None, 0, 1], keepdims=[True, False])
+    def test_logsumexp3(): combo_check(special.logsumexp, [0], modes=['fwd', 'rev'])([R(4)], b = [np.exp(R(4))],         axis=[None, 0],    keepdims=[True, False])
+    def test_logsumexp4(): combo_check(special.logsumexp, [0], modes=['fwd', 'rev'])([R(3,4),], b = [np.exp(R(3,4))],    axis=[None, 0, 1], keepdims=[True, False])
+    def test_logsumexp5(): combo_check(special.logsumexp, [0], modes=['fwd', 'rev'])([R(2,3,4)], b = [np.exp(R(2,3,4))], axis=[None, 0, 1], keepdims=[True, False])
     def test_logsumexp6():
         x = npr.randn(1,5)
-        def f(a): return autograd.scipy.misc.logsumexp(a, axis=1, keepdims=True)
+        def f(a): return special.logsumexp(a, axis=1, keepdims=True)
         check_grads(f, modes=['fwd', 'rev'])(x)
         check_grads(lambda a: grad(f)(a), modes=['fwd', 'rev'])(x)
 
